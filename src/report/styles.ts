@@ -211,6 +211,8 @@ body {
 .badge--orange { border-color: var(--orange); color: var(--orange); }
 .badge--blue { border-color: var(--blue); color: var(--blue); }
 .badge--pink { border-color: var(--pink); color: var(--pink); }
+.badge--link { cursor: pointer; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; }
+.badge--link:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
 
 /* ── Stats Grid ── */
 .stats-grid {

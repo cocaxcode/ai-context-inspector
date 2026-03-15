@@ -91,12 +91,12 @@ export function renderHeader(
       <h1>&gt; ai-context-inspector</h1>
       <div class="subtitle">${esc(project.name)} &mdash; ${date} &mdash; ${scanDuration}ms</div>
       <div class="badges">
-        <span class="badge badge--accent">${summary.totalMcpServers} MCPs</span>
-        <span class="badge badge--green">${summary.totalTools} tools</span>
-        <span class="badge badge--purple">${summary.totalFiles} archivos</span>
-        <span class="badge badge--orange">${summary.totalSkills} skills</span>
-        <span class="badge badge--blue">${summary.totalAgents} agents</span>
-        <span class="badge badge--pink">${summary.totalMemories} memorias</span>
+        <a class="badge badge--accent badge--link" data-target="section-mcp">${summary.totalMcpServers} MCPs</a>
+        <a class="badge badge--green badge--link" data-target="section-mcp">${summary.totalTools} tools</a>
+        <a class="badge badge--purple badge--link" data-target="section-context">${summary.totalFiles} archivos</a>
+        <a class="badge badge--orange badge--link" data-target="section-skills">${summary.totalSkills} skills</a>
+        <a class="badge badge--blue badge--link" data-target="section-agents">${summary.totalAgents} agents</a>
+        <a class="badge badge--pink badge--link" data-target="section-memories">${summary.totalMemories} memorias</a>
       </div>
     </header>`
 }
@@ -110,45 +110,51 @@ export function renderStatsGrid(summary: ScanSummary): string {
       value: summary.totalMcpServers,
       label: 'MCP Servers',
       color: '#00d4ff',
+      section: 'section-mcp',
     },
     {
       icon: '\uD83D\uDEE0\uFE0F',
       value: summary.totalTools,
       label: 'MCP Tools',
       color: '#00e676',
+      section: 'section-mcp',
     },
     {
       icon: '\uD83D\uDCC4',
       value: summary.totalFiles,
       label: 'Archivos AI',
       color: '#b388ff',
+      section: 'section-context',
     },
     {
       icon: '\u26A1',
       value: summary.totalSkills,
       label: 'Skills',
       color: '#ffab40',
+      section: 'section-skills',
     },
     {
       icon: '\uD83E\uDD16',
       value: summary.totalAgents,
       label: 'Agents',
       color: '#4285f4',
+      section: 'section-agents',
     },
     {
       icon: '\uD83E\uDDE0',
       value: summary.totalMemories,
       label: 'Memorias',
       color: '#ff80ab',
+      section: 'section-memories',
     },
   ]
 
   const cards = stats
     .map(
       (s) => `
-      <div class="stat-card" style="--stat-color: ${s.color}">
+      <div class="stat-card" data-target="${s.section}" style="--stat-color: ${s.color};cursor:pointer">
         <span class="stat-icon">${s.icon}</span>
-        <span class="stat-number" data-target="${s.value}">0</span>
+        <span class="stat-number" data-count="${s.value}">0</span>
         <span class="stat-label">${s.label}</span>
       </div>`,
     )

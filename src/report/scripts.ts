@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Animated Counters ──
   document.querySelectorAll('.stat-number').forEach(el => {
-    const target = parseInt(el.getAttribute('data-target') || '0')
+    const target = parseInt(el.getAttribute('data-count') || '0')
     if (target === 0) { el.textContent = '0'; return }
     let current = 0
     const step = Math.max(1, Math.ceil(target / 25))
@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  // ── Nav Links (scroll to section) ──
-  document.querySelectorAll('.nav-link[data-target]').forEach(link => {
+  // ── Nav Links + Header Badges (scroll to section) ──
+  document.querySelectorAll('[data-target]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault()
       scrollToSection(link.getAttribute('data-target'))
