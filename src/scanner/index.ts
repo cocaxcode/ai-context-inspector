@@ -5,6 +5,7 @@ import { scanContextFiles } from './context-files.js'
 import { scanMcpConfigs } from './mcp-configs.js'
 import { introspectServers } from './mcp-introspect.js'
 import { scanSkills } from './skills.js'
+import { scanAgents } from './agents.js'
 import { scanMemories } from './memories.js'
 import type { ScanConfig, ScanResult, ProjectInfo, ScanWarning } from './types.js'
 
@@ -33,15 +34,17 @@ export async function runAllScanners(config: ScanConfig): Promise<ScanResult> {
   }
 
   // Run file-based scanners in parallel
-  const [contextResult, mcpResult, skillsResult] = await Promise.all([
+  const [contextResult, mcpResult, skillsResult, agentsResult] = await Promise.all([
     scanContextFiles({ ...config, dir: absDir }),
     scanMcpConfigs({ dir: absDir, includeUser: config.includeUser }),
     scanSkills({ ...config, dir: absDir }),
+    scanAgents({ ...config, dir: absDir }),
   ])
 
   warnings.push(...contextResult.warnings)
   warnings.push(...mcpResult.warnings)
   warnings.push(...skillsResult.warnings)
+  warnings.push(...agentsResult.warnings)
 
   // Introspect MCP servers if enabled
   if (config.introspect && mcpResult.servers.length > 0) {
@@ -62,6 +65,7 @@ export async function runAllScanners(config: ScanConfig): Promise<ScanResult> {
     contextFiles: contextResult.files,
     mcpServers: mcpResult.servers,
     skills: skillsResult.skills,
+    agents: agentsResult.agents,
     memories: memoriesResult.memories,
     warnings,
     scanDuration,

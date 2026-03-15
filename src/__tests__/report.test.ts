@@ -12,6 +12,7 @@ function mockScanResult(overrides: Partial<ScanResult> = {}): ScanResult {
     contextFiles: [],
     mcpServers: [],
     skills: [],
+    agents: [],
     memories: [],
     warnings: [],
     scanDuration: 42,

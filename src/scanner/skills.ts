@@ -1,10 +1,38 @@
-import { readFile, readdir, stat } from 'node:fs/promises'
+import { readFile, readdir, stat, lstat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 import type { ScanConfig, SkillResult, ScanWarning } from './types.js'
 
 const SKILL_DIRS_PROJECT = ['.claude/skills']
 const SKILL_DIRS_USER = ['~/.claude/skills']
+
+/**
+ * Parse YAML frontmatter from SKILL.md (between --- delimiters)
+ */
+function parseFrontmatter(
+  content: string,
+): Record<string, string> | null {
+  const match = content.match(/^---\s*\n([\s\S]*?)\n---/)
+  if (!match) return null
+
+  const result: Record<string, string> = {}
+  let currentKey = ''
+  let currentValue = ''
+
+  for (const line of match[1].split('\n')) {
+    const kvMatch = line.match(/^(\w[\w-]*):\s*(.*)$/)
+    if (kvMatch) {
+      if (currentKey) result[currentKey] = currentValue.trim()
+      currentKey = kvMatch[1]
+      currentValue = kvMatch[2].replace(/^["'>-]\s*/, '').replace(/"$/, '')
+    } else if (currentKey && line.match(/^\s+/)) {
+      currentValue += ' ' + line.trim()
+    }
+  }
+  if (currentKey) result[currentKey] = currentValue.trim()
+
+  return result
+}
 
 async function scanSkillDir(
   dirPath: string,
@@ -15,23 +43,51 @@ async function scanSkillDir(
   try {
     const entries = await readdir(dirPath, { withFileTypes: true })
     for (const entry of entries) {
-      if (!entry.isDirectory()) continue
-      if (entry.name.startsWith('_') || entry.name.startsWith('sdd-')) continue
+      // Skip shared directory
+      if (entry.name.startsWith('_')) continue
 
-      const skillMdPath = join(dirPath, entry.name, 'SKILL.md')
+      // Check if it's a directory or symlink to directory
+      const entryPath = join(dirPath, entry.name)
+      let isDir = entry.isDirectory()
+
+      if (entry.isSymbolicLink()) {
+        try {
+          const targetStat = await stat(entryPath)
+          isDir = targetStat.isDirectory()
+        } catch {
+          continue // Broken symlink
+        }
+      }
+
+      if (!isDir) continue
+
+      const skillMdPath = join(entryPath, 'SKILL.md')
       try {
         await stat(skillMdPath)
         const content = await readFile(skillMdPath, 'utf-8')
 
-        // Extract description from first paragraph after ## Purpose
         let description: string | undefined
-        const purposeMatch = content.match(/##\s*Purpose\s*\n+(.+)/i)
-        if (purposeMatch) {
-          description = purposeMatch[1].trim().slice(0, 200)
+        let name = entry.name
+        const triggers: string[] = []
+
+        // Try YAML frontmatter first
+        const frontmatter = parseFrontmatter(content)
+        if (frontmatter) {
+          if (frontmatter.name) name = frontmatter.name
+          if (frontmatter.description) {
+            description = frontmatter.description.slice(0, 200)
+          }
         }
 
-        // Extract triggers from frontmatter or content
-        const triggers: string[] = []
+        // Fallback: extract from ## Purpose section
+        if (!description) {
+          const purposeMatch = content.match(/##\s*Purpose\s*\n+(.+)/i)
+          if (purposeMatch) {
+            description = purposeMatch[1].trim().slice(0, 200)
+          }
+        }
+
+        // Extract triggers
         const triggerMatch = content.match(
           /(?:trigger|triggers?):\s*(.+)/gi,
         )
@@ -42,13 +98,23 @@ async function scanSkillDir(
           }
         }
 
+        // Detect if symlinked (installed from external source)
+        let isSymlink = false
+        try {
+          const lstats = await lstat(entryPath)
+          isSymlink = lstats.isSymbolicLink()
+        } catch {
+          // ignore
+        }
+
         skills.push({
-          name: entry.name,
+          name,
           path: skillMdPath,
           scope,
           description,
           triggers: triggers.length > 0 ? triggers : undefined,
-        })
+          isSymlink,
+        } as SkillResult & { isSymlink?: boolean })
       } catch {
         // No SKILL.md, skip
       }

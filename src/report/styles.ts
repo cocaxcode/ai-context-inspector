@@ -93,6 +93,7 @@ body {
 .badge--green { border-color: var(--green); color: var(--green); }
 .badge--purple { border-color: var(--purple); color: var(--purple); }
 .badge--orange { border-color: var(--orange); color: var(--orange); }
+.badge--blue { border-color: #4285f4; color: #4285f4; }
 
 /* ── Search ── */
 .search-bar {
@@ -232,6 +233,10 @@ body {
 .tool-badge--augment { background: #9c27b020; color: #9c27b0; border: 1px solid #9c27b040; }
 .tool-badge--replit { background: #f2620020; color: #f26200; border: 1px solid #f2620040; }
 .tool-badge--firebase { background: #ffca2820; color: #ffca28; border: 1px solid #ffca2840; }
+.tool-badge--opencode { background: #22c55e20; color: #22c55e; border: 1px solid #22c55e40; }
+.tool-badge--roo { background: #06b6d420; color: #06b6d4; border: 1px solid #06b6d440; }
+.tool-badge--tabnine { background: #e8596820; color: #e85968; border: 1px solid #e8596840; }
+.tool-badge--sourcegraph { background: #a112ff20; color: #a112ff; border: 1px solid #a112ff40; }
 .tool-badge--vscode { background: #007acc20; color: #007acc; border: 1px solid #007acc40; }
 .tool-badge--universal { background: #78909c20; color: #78909c; border: 1px solid #78909c40; }
 

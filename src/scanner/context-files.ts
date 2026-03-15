@@ -8,7 +8,7 @@ import type {
   ScanWarning,
 } from './types.js'
 
-const PREVIEW_MAX_CHARS = 500
+const PREVIEW_MAX_CHARS = 2000
 
 function resolveHome(p: string): string {
   return p.startsWith('~/') ? join(homedir(), p.slice(2)) : p

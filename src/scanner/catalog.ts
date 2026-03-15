@@ -157,6 +157,52 @@ export const AI_FILE_CATALOG: CatalogEntry[] = [
     description: 'Directorio de configuración de Codex',
   },
 
+  // ── OpenCode ──
+  {
+    path: 'OPENCODE.md',
+    tool: 'opencode',
+    type: 'file',
+    scope: 'project',
+    description: 'Instrucciones de proyecto para OpenCode CLI',
+  },
+  {
+    path: '.opencode',
+    tool: 'opencode',
+    type: 'directory',
+    scope: 'project',
+    description: 'Directorio de configuración de OpenCode',
+  },
+  {
+    path: 'opencode.json',
+    tool: 'opencode',
+    type: 'file',
+    scope: 'project',
+    description: 'Configuración de OpenCode',
+  },
+
+  // ── Roo Code (ex-Cline fork) ──
+  {
+    path: '.roo/rules',
+    tool: 'roo',
+    type: 'directory',
+    scope: 'project',
+    description: 'Directorio de reglas de Roo Code',
+  },
+  {
+    path: '.roorules',
+    tool: 'roo',
+    type: 'file',
+    scope: 'project',
+    description: 'Reglas de Roo Code (archivo único)',
+  },
+  {
+    path: '.rooignore',
+    tool: 'roo',
+    type: 'file',
+    scope: 'project',
+    description: 'Archivos excluidos de Roo Code',
+  },
+
   // ── Aider ──
   {
     path: '.aider.conf.yml',
@@ -271,6 +317,40 @@ export const AI_FILE_CATALOG: CatalogEntry[] = [
     description: 'Convenciones de código (multi-tool)',
   },
 
+  // ── Tabnine ──
+  {
+    path: '.tabnine.yaml',
+    tool: 'tabnine',
+    type: 'file',
+    scope: 'project',
+    description: 'Configuración de Tabnine AI',
+  },
+
+  // ── Sourcegraph / Cody ──
+  {
+    path: '.sourcegraph',
+    tool: 'sourcegraph',
+    type: 'directory',
+    scope: 'project',
+    description: 'Directorio de Sourcegraph Cody',
+  },
+
+  // ── Continue.dev (project level) ──
+  {
+    path: '.continuerules',
+    tool: 'continue',
+    type: 'file',
+    scope: 'project',
+    description: 'Reglas de Continue.dev',
+  },
+  {
+    path: '.continue/config.yaml',
+    tool: 'continue',
+    type: 'file',
+    scope: 'project',
+    description: 'Configuración de Continue.dev',
+  },
+
   // ── User-level entries ──
   {
     path: '~/.claude',
@@ -348,5 +428,19 @@ export const AI_FILE_CATALOG: CatalogEntry[] = [
     type: 'directory',
     scope: 'user',
     description: 'Configuración global de Codeium/Windsurf',
+  },
+  {
+    path: '~/.opencode',
+    tool: 'opencode',
+    type: 'directory',
+    scope: 'user',
+    description: 'Configuración global de OpenCode CLI',
+  },
+  {
+    path: '~/.tabnine',
+    tool: 'tabnine',
+    type: 'directory',
+    scope: 'user',
+    description: 'Configuración global de Tabnine',
   },
 ]

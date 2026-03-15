@@ -14,6 +14,7 @@ export interface ScanResult {
   contextFiles: ContextFileResult[]
   mcpServers: McpServerResult[]
   skills: SkillResult[]
+  agents: AgentResult[]
   memories: MemoryResult[]
   warnings: ScanWarning[]
   scanDuration: number
@@ -34,13 +35,17 @@ export type AiTool =
   | 'copilot'
   | 'gemini'
   | 'codex'
+  | 'opencode'
   | 'aider'
   | 'cline'
+  | 'roo'
   | 'continue'
   | 'amazonq'
   | 'augment'
   | 'replit'
   | 'firebase'
+  | 'tabnine'
+  | 'sourcegraph'
   | 'vscode'
   | 'universal'
 
@@ -115,12 +120,23 @@ export interface SkillResult {
   triggers?: string[]
 }
 
+// ── Agents ──
+
+export interface AgentResult {
+  name: string
+  path: string
+  scope: 'project' | 'user'
+  description?: string
+  model?: string
+  hasMemory: boolean
+}
+
 // ── Memories ──
 
 export interface MemoryResult {
-  type: 'engram' | 'openspec' | 'atl' | 'other'
+  type: 'engram' | 'openspec' | 'atl' | 'claude-memory' | 'agent-memory' | 'other'
   path?: string
-  source: 'filesystem' | 'mcp'
+  source: 'filesystem' | 'mcp' | 'plugin'
   status: 'active' | 'configured' | 'detected'
   details?: Record<string, unknown>
 }

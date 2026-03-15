@@ -3,6 +3,7 @@ import type {
   ContextFileResult,
   McpServerResult,
   SkillResult,
+  AgentResult,
   MemoryResult,
   AiTool,
 } from '../scanner/types.js'
@@ -26,6 +27,7 @@ export interface ScanSummary {
   totalTools: number
   totalFiles: number
   totalSkills: number
+  totalAgents: number
   totalMemories: number
 }
 
@@ -44,6 +46,7 @@ export function renderHeader(
         <span class="badge badge--green">${summary.totalTools} tools</span>
         <span class="badge badge--purple">${summary.totalFiles} archivos</span>
         <span class="badge badge--orange">${summary.totalSkills} skills</span>
+        <span class="badge badge--blue">${summary.totalAgents} agents</span>
         <span class="badge badge--accent">${summary.totalMemories} memorias</span>
       </div>
     </header>`
@@ -223,6 +226,43 @@ export function renderSkills(skills: SkillResult[]): string {
         <h2>Skills</h2>
         <div>
           <span class="count">${skills.length}</span>
+          <span class="arrow">&#9660;</span>
+        </div>
+      </div>
+      <div class="section-content">${items}</div>
+    </div>`
+}
+
+export function renderAgents(agents: AgentResult[]): string {
+  if (agents.length === 0) return ''
+
+  const items = agents
+    .map((a) => {
+      const modelHtml = a.model
+        ? `<span class="badge badge--green">${esc(a.model)}</span>`
+        : ''
+      const memoryHtml = a.hasMemory
+        ? '<span class="badge badge--accent">memoria</span>'
+        : ''
+      return `
+        <div class="card" data-searchable="${esc(a.name + ' ' + (a.description ?? ''))}">
+          <div class="card-title">
+            ${esc(a.name)}
+            ${modelHtml}
+            ${memoryHtml}
+            <span class="scope-badge scope-badge--${a.scope}">${a.scope}</span>
+          </div>
+          ${a.description ? `<div class="card-meta">${esc(a.description)}</div>` : ''}
+        </div>`
+    })
+    .join('')
+
+  return `
+    <div class="section">
+      <div class="section-header">
+        <h2>Agents</h2>
+        <div>
+          <span class="count">${agents.length}</span>
           <span class="arrow">&#9660;</span>
         </div>
       </div>

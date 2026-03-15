@@ -6,6 +6,7 @@ import {
   renderMcpServers,
   renderContextFiles,
   renderSkills,
+  renderAgents,
   renderMemories,
   renderEmptyState,
   type ScanSummary,
@@ -20,6 +21,7 @@ function computeSummary(result: ScanResult): ScanSummary {
     ),
     totalFiles: result.contextFiles.length,
     totalSkills: result.skills.length,
+    totalAgents: result.agents.length,
     totalMemories: result.memories.length,
   }
 }
@@ -30,6 +32,7 @@ export function generateHtml(result: ScanResult): string {
     summary.totalMcpServers === 0 &&
     summary.totalFiles === 0 &&
     summary.totalSkills === 0 &&
+    summary.totalAgents === 0 &&
     summary.totalMemories === 0
 
   const header = renderHeader(result.project, summary, result.scanDuration)
@@ -39,6 +42,7 @@ export function generateHtml(result: ScanResult): string {
         renderMcpServers(result.mcpServers),
         renderContextFiles(result.contextFiles),
         renderSkills(result.skills),
+        renderAgents(result.agents),
         renderMemories(result.memories),
       ].join('')
 
@@ -54,7 +58,7 @@ export function generateHtml(result: ScanResult): string {
   <div class="container">
     ${header}
     <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Buscar tools, archivos, skills..." />
+      <input type="text" id="search-input" placeholder="Buscar tools, archivos, skills, agents..." />
     </div>
     ${content}
     <footer class="footer">
