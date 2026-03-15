@@ -20,7 +20,8 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "prepare": "npm run build",
-    "inspector": "npx @modelcontextprotocol/inspector node dist/index.js -- --mcp"
+    "inspector": "npx @modelcontextprotocol/inspector node dist/index.js -- --mcp",
+    "serve:report": "node serve-report.js"
   },
   "engines": {
     "node": ">=20.0.0"
