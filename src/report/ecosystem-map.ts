@@ -214,7 +214,7 @@ export function renderEcosystemMap(
 
     // Category node — circle + label ABOVE
     const nodeR = dimmed ? 24 : 32
-    const labelY = y - nodeR - 18
+    const labelY = y - nodeR - 28
 
     catNodes += `<g class="eco-cat-node" data-section="${cat.id}"
       style="cursor:pointer;opacity:${opacity}" role="button" tabindex="0">
