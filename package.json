@@ -1,6 +1,6 @@
 {
   "name": "@cocaxcode/ai-context-inspector",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Scan any project to discover its complete AI ecosystem: MCP servers, tools, context files, skills, memories. Generates an interactive HTML dashboard. Works as CLI and MCP server.",
   "type": "module",
   "bin": {
