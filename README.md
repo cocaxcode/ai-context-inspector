@@ -1,126 +1,380 @@
-# @cocaxcode/ai-context-inspector
+<p align="center">
+  <h1 align="center">@cocaxcode/ai-context-inspector</h1>
+  <p align="center">
+    <strong>See everything your AI tools know about your project.</strong><br/>
+    19 AI tools &middot; 6 scanners &middot; 3 MCP tools &middot; Dual mode: CLI + MCP server
+  </p>
+</p>
 
-[![npm](https://img.shields.io/npm/v/@cocaxcode/ai-context-inspector)](https://www.npmjs.com/package/@cocaxcode/ai-context-inspector)
-[![tests](https://img.shields.io/badge/tests-33%20passing-brightgreen)]()
-[![tools](https://img.shields.io/badge/AI%20tools-13%20supported-blue)]()
-[![license](https://img.shields.io/badge/license-MIT-green)]()
+<p align="center">
+  <a href="https://www.npmjs.com/package/@cocaxcode/ai-context-inspector"><img src="https://img.shields.io/npm/v/@cocaxcode/ai-context-inspector.svg?style=flat-square&color=cb3837" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/@cocaxcode/ai-context-inspector"><img src="https://img.shields.io/npm/dm/@cocaxcode/ai-context-inspector.svg?style=flat-square" alt="npm downloads" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" /></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D20-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node" />
+  <img src="https://img.shields.io/badge/AI%20tools-19%20supported-blueviolet?style=flat-square" alt="19 AI tools" />
+  <img src="https://img.shields.io/badge/tests-33-brightgreen?style=flat-square" alt="33 tests" />
+</p>
 
-**Escanea cualquier proyecto para descubrir su ecosistema AI completo.** MCP servers, tools, archivos de contexto, skills, memorias — todo en un dashboard HTML interactivo.
+<p align="center">
+  <a href="#the-problem">The Problem</a> &middot;
+  <a href="#the-solution">The Solution</a> &middot;
+  <a href="#installation">Installation</a> &middot;
+  <a href="#cli-usage">CLI Usage</a> &middot;
+  <a href="#mcp-server">MCP Server</a> &middot;
+  <a href="#what-it-detects">What It Detects</a> &middot;
+  <a href="#html-dashboard">HTML Dashboard</a> &middot;
+  <a href="#architecture">Architecture</a>
+</p>
 
-## El problema
+---
 
-Tu proyecto tiene archivos de configuración AI dispersos: `CLAUDE.md`, `.cursorrules`, `.mcp.json`, `.windsurfrules`, `GEMINI.md`, `.github/copilot-instructions.md`... y no sabes exactamente qué tienes disponible ni qué tools exponen tus MCP servers.
+## The Problem
 
-## La solución
+Your project has AI configuration scattered everywhere:
+
+- `CLAUDE.md` with project instructions, `.cursorrules` with coding rules, `AGENTS.md` with universal guidelines
+- MCP servers configured in `.mcp.json`, `~/.claude.json`, `.vscode/mcp.json` — each with different tools
+- Custom skills installed via `npx skills add`, custom agents in `~/.claude/agents/`
+- Persistent memories in engram, Claude memory files, agent-specific memory stores
+- **You don't know the full picture.** Each tool sees only its own slice.
+
+## The Solution
+
+**AI Context Inspector** scans your entire AI ecosystem in one shot:
 
 ```bash
 npx @cocaxcode/ai-context-inspector
 ```
 
-Genera un **dashboard HTML interactivo** que muestra:
-- Todos los archivos de configuración AI encontrados (13 herramientas soportadas)
-- MCP servers configurados con sus tools, resources y prompts (introspección real)
-- Skills disponibles
-- Sistemas de memoria (engram, openspec, .atl)
+It discovers **every** AI configuration file, MCP server (with live introspection), installed skill, custom agent, and persistent memory — then generates a beautiful HTML dashboard or exposes the data as an MCP server for your AI tools to consume.
 
-## Instalacion
+**Zero config. Zero dependencies.** Just run it.
+
+---
+
+## Installation
+
+### CLI (one-shot, no install)
 
 ```bash
-# Uso directo (sin instalar)
 npx @cocaxcode/ai-context-inspector
+```
 
-# Instalar globalmente
-npm install -g @cocaxcode/ai-context-inspector
+### Claude Code (MCP server)
 
-# Como MCP server en tu proyecto
-# .mcp.json:
+```bash
+claude mcp add ai-context-inspector -- npx -y @cocaxcode/ai-context-inspector@latest --mcp
+```
+
+Or add to your `.mcp.json`:
+
+```json
 {
   "mcpServers": {
     "ai-context-inspector": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@cocaxcode/ai-context-inspector", "--mcp"]
+      "args": ["-y", "@cocaxcode/ai-context-inspector@latest", "--mcp"]
     }
   }
 }
 ```
 
-## Uso CLI
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "ai-context-inspector": {
+      "command": "npx",
+      "args": ["-y", "@cocaxcode/ai-context-inspector@latest", "--mcp"]
+    }
+  }
+}
+```
+
+### Cursor / Windsurf
+
+Add to `.cursor/mcp.json` or equivalent:
+
+```json
+{
+  "mcpServers": {
+    "ai-context-inspector": {
+      "command": "npx",
+      "args": ["-y", "@cocaxcode/ai-context-inspector@latest", "--mcp"]
+    }
+  }
+}
+```
+
+### Codex CLI
 
 ```bash
-# Escanear directorio actual y generar HTML
+codex mcp add ai-context-inspector -- npx -y @cocaxcode/ai-context-inspector@latest --mcp
+```
+
+### VS Code
+
+Add to `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "ai-context-inspector": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@cocaxcode/ai-context-inspector@latest", "--mcp"]
+    }
+  }
+}
+```
+
+---
+
+## CLI Usage
+
+```bash
+# Scan current directory → generates HTML report
 npx @cocaxcode/ai-context-inspector
 
-# Escanear otro directorio
+# Scan a specific directory
 npx @cocaxcode/ai-context-inspector --dir /path/to/project
 
-# Output JSON (para pipes o programatico)
+# Include user-level configs (~/.claude, ~/.gemini, etc.)
+npx @cocaxcode/ai-context-inspector --user
+
+# Enable live MCP server introspection (connects to each server)
+npx @cocaxcode/ai-context-inspector --introspect
+
+# Set introspection timeout (default: 10000ms)
+npx @cocaxcode/ai-context-inspector --introspect --timeout 15000
+
+# Output raw JSON instead of HTML
 npx @cocaxcode/ai-context-inspector --json
 
-# Sin conectar a MCP servers (solo archivos)
-npx @cocaxcode/ai-context-inspector --no-introspect
+# Run as MCP server (for AI tool integration)
+npx @cocaxcode/ai-context-inspector --mcp
 
-# Incluir configuracion del usuario (~/.claude/, ~/.gemini/, etc.)
-npx @cocaxcode/ai-context-inspector --include-user
-
-# Guardar en ruta personalizada
-npx @cocaxcode/ai-context-inspector --output ./reports/scan.html
-
-# Timeout personalizado para introspección MCP
-npx @cocaxcode/ai-context-inspector --timeout 5000
+# All flags combined
+npx @cocaxcode/ai-context-inspector --dir ./my-project --user --introspect --timeout 15000
 ```
 
-## Uso como MCP Server
+### CLI Flags Reference
 
-Cuando se ejecuta con `--mcp`, expone 3 tools:
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--dir <path>` | Directory to scan | `.` (current) |
+| `--user` | Include user-level configs (`~/`) | `false` |
+| `--introspect` | Connect to MCP servers and list tools | `false` |
+| `--timeout <ms>` | Introspection timeout per server | `10000` |
+| `--json` | Output JSON instead of HTML | `false` |
+| `--mcp` | Run as MCP server (stdio transport) | `false` |
 
-| Tool | Descripcion |
-|------|-------------|
-| `scan` | Escanea un proyecto y retorna todo el ecosistema AI como JSON |
-| `introspect_mcp` | Introspecciona un MCP server específico por nombre |
-| `generate_report` | Genera el dashboard HTML interactivo |
+---
 
-## Herramientas AI Soportadas (13)
+## MCP Server
 
-| Herramienta | Archivos detectados |
-|-------------|-------------------|
-| **Claude** | CLAUDE.md, .claude/, .mcp.json |
-| **Cursor** | .cursorrules, .cursor/rules/, .cursorignore |
-| **Windsurf** | .windsurfrules, .windsurf/rules/ |
-| **GitHub Copilot** | .github/copilot-instructions.md, .github/instructions/, .github/agents/ |
-| **Gemini** | GEMINI.md, .gemini/ |
-| **OpenAI Codex** | AGENTS.md, AGENT.md, .codex/ |
-| **Aider** | .aider.conf.yml, .aiderignore |
-| **Cline** | .clinerules, .clineignore |
-| **Continue** | ~/.continue/ |
-| **Amazon Q** | .amazonq/rules/ |
-| **Augment** | .augment/rules/, .augment-guidelines |
-| **Replit** | .replit.md |
-| **Firebase Studio** | .idx/airules.md |
+When running as an MCP server (`--mcp`), three tools are exposed:
 
-Ademas detecta: `.vscode/mcp.json`, `CONVENTIONS.md`, y configuraciones a nivel de usuario (`~/.claude/`, `~/.gemini/`, etc.)
+### `scan`
 
-## Dashboard HTML
+Scan a project directory to discover its complete AI ecosystem.
 
-El dashboard generado es un archivo HTML single-file:
-- **Zero dependencias externas** — funciona offline, sin servidor
-- **Dark/Light mode** automatico (respeta prefers-color-scheme)
-- **Busqueda global** — filtra tools, archivos y skills
-- **Secciones colapsables** — navega rapido por el contenido
-- **Preview de archivos** — ve el contenido sin abrir el editor
+**Parameters:**
 
-## Arquitectura
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `directory` | string | No | Path to scan (default: cwd) |
+| `include_user` | boolean | No | Include user-level configs |
+| `introspect` | boolean | No | Live-connect to MCP servers |
+| `timeout` | number | No | Introspection timeout (ms) |
+
+**Example prompt:** _"Scan this project and tell me what AI tools are configured"_
+
+### `introspect_mcp`
+
+Connect to a specific MCP server and list its tools, resources, and prompts.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `command` | string | Yes* | Command to launch the server |
+| `args` | string[] | No | Arguments for the command |
+| `env` | object | No | Environment variables |
+| `url` | string | Yes* | URL for HTTP/SSE servers |
+| `transport` | string | No | `stdio` (default) or `http` |
+| `timeout` | number | No | Connection timeout (ms) |
+
+*Either `command` (stdio) or `url` (http) is required.
+
+**Example prompt:** _"Introspect the MCP server at npx @anthropic/mcp-server-memory"_
+
+### `generate_report`
+
+Generate a standalone HTML dashboard from scan results.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `directory` | string | No | Path to scan |
+| `include_user` | boolean | No | Include user-level configs |
+| `introspect` | boolean | No | Introspect MCP servers |
+| `timeout` | number | No | Introspection timeout (ms) |
+
+**Example prompt:** _"Generate an HTML report of my project's AI context"_
+
+---
+
+## What It Detects
+
+### 19 AI Coding Tools
+
+| Tool | Context Files | Description |
+|------|--------------|-------------|
+| **Claude Code** | `CLAUDE.md`, `.claude/`, `.mcp.json` | Project instructions + MCP config |
+| **Cursor** | `.cursorrules`, `.cursor/rules/`, `.cursorignore` | Rules + ignore patterns |
+| **Windsurf** | `.windsurfrules`, `.windsurf/rules/` | Codeium/Windsurf rules |
+| **GitHub Copilot** | `.github/copilot-instructions.md`, `.github/agents/` | Instructions + custom agents |
+| **Gemini CLI** | `GEMINI.md`, `.gemini/`, `.geminiignore` | Google Gemini config |
+| **OpenAI Codex** | `AGENTS.md`, `AGENT.md`, `.codex/` | Universal agent instructions |
+| **OpenCode** | `OPENCODE.md`, `.opencode/`, `opencode.json` | OpenCode CLI config |
+| **Aider** | `.aider.conf.yml`, `.aiderignore` | Aider config + model settings |
+| **Cline** | `.clinerules`, `.clineignore` | Cline rules (file or directory) |
+| **Roo Code** | `.roo/rules/`, `.roorules`, `.rooignore` | Roo Code rules |
+| **Continue.dev** | `.continuerules`, `.continue/config.yaml` | Continue rules + config |
+| **Amazon Q** | `.amazonq/rules/` | Amazon Q Developer rules |
+| **Augment** | `.augment/rules/`, `.augment-guidelines` | Augment Code rules |
+| **Replit** | `.replit.md` | Replit Agent instructions |
+| **Firebase Studio** | `.idx/airules.md` | Firebase Studio AI rules |
+| **VS Code** | `.vscode/mcp.json` | VS Code MCP configuration |
+| **Tabnine** | `.tabnine.yaml` | Tabnine AI config |
+| **Sourcegraph** | `.sourcegraph/` | Sourcegraph Cody config |
+| **Universal** | `CONVENTIONS.md` | Multi-tool conventions |
+
+Plus **user-level configs** (`~/.claude/`, `~/.gemini/`, `~/.codex/`, `~/.continue/`, `~/.aider.conf.yml`, `~/.augment/`, `~/.github/agents/`, `~/.codeium/`, `~/.opencode/`, `~/.tabnine/`).
+
+### MCP Servers
+
+- Discovers servers from `.mcp.json`, `~/.claude.json`, `.vscode/mcp.json`, Claude Desktop config
+- Groups by source: project, user, VS Code, desktop
+- **Live introspection**: connects to each server, lists tools/resources/prompts with descriptions
+- Shows transport type (stdio/http/sse), command, args, environment variables
+
+### Custom Skills
+
+- Scans `.claude/skills/` (project) and `~/.claude/skills/` (user)
+- Follows symlinks (installed via `npx skills add`)
+- Parses YAML frontmatter for name, description, triggers
+- Falls back to `## Purpose` section parsing
+
+### Custom Agents
+
+- Scans `.claude/agents/` (project) and `~/.claude/agents/` (user)
+- Parses YAML frontmatter for name, description, model
+- Detects if agent has persistent memory (via `~/.claude/agent-memory/`)
+
+### Persistent Memories
+
+- **Claude Memory**: `~/.claude/projects/*/memory/MEMORY.md` with preview
+- **Agent Memory**: `~/.claude/agent-memory/` files and directories
+- **Engram**: detected as MCP server or Claude Code plugin
+- **OpenSpec**: `openspec/` directory with specs and changes count
+- **ATL**: `.atl/` directory with file count
+
+---
+
+## HTML Dashboard
+
+The CLI generates a **self-contained HTML file** (no external dependencies) with:
+
+- **Dark/light mode** — auto-detects system preference
+- **Summary badges** — total MCPs, tools, files, skills, agents, memories at a glance
+- **Collapsible sections** — expand/collapse each category
+- **Search** — filter across all sections in real-time
+- **File previews** — inline preview of context file contents
+- **MCP tool details** — full tool listings with descriptions and input schemas
+- **Tool badges** — color-coded by AI tool (Claude, Cursor, Copilot, etc.)
+
+---
+
+## Architecture
 
 ```
-Scanner modular → ScanResult (JSON) → HTML Dashboard
-     ↑                  ↑                    ↑
-  5 scanners     Usado por CLI         Template literals
-  en paralelo    y MCP tools           CSS/JS inline
+src/
+├── index.ts              # Entry: CLI vs MCP mode routing
+├── cli.ts                # CLI arg parsing + orchestration
+├── server.ts             # createServer() MCP factory
+├── scanner/
+│   ├── types.ts          # All TypeScript interfaces
+│   ├── catalog.ts        # AI_FILE_CATALOG (50+ entries, 19 tools)
+│   ├── index.ts          # runAllScanners() orchestrator
+│   ├── context-files.ts  # Scan context files (.md, rules, configs)
+│   ├── mcp-configs.ts    # Parse .mcp.json, ~/.claude.json, etc.
+│   ├── mcp-introspect.ts # Connect to MCP servers, list tools/resources
+│   ├── skills.ts         # Scan skill directories + parse frontmatter
+│   ├── agents.ts         # Scan agent directories + detect memory
+│   └── memories.ts       # Detect engram, openspec, .atl, claude memory
+├── report/
+│   ├── generator.ts      # generateHtml(ScanResult) → string
+│   ├── sections.ts       # HTML section renderers
+│   ├── styles.ts         # CSS (dark/light mode)
+│   └── scripts.ts        # JS (collapse, search, preview)
+├── tools/
+│   ├── scan.ts           # MCP tool: scan project
+│   ├── introspect.ts     # MCP tool: introspect specific MCP
+│   └── report.ts         # MCP tool: generate HTML report
+└── __tests__/
+    ├── fixtures/          # Test projects (full, empty, mcp-only)
+    ├── helpers.ts         # fixture() path helper
+    └── *.test.ts          # 7 test files, 33 tests
 ```
 
-- **33 tests** | **3 MCP tools** | **13 AI tools** | **40+ archivos detectados**
-- TypeScript 5.x + ESM + Node 20+
-- Zero runtime dependencies beyond MCP SDK + Zod
+### 6 Parallel Scanners
+
+| Scanner | Detects | Sources |
+|---------|---------|---------|
+| `context-files` | Config files for 19 AI tools | Project + user dirs |
+| `mcp-configs` | MCP server definitions | `.mcp.json`, `~/.claude.json`, VS Code, Desktop |
+| `mcp-introspect` | Live tool/resource/prompt listings | stdio/http connections |
+| `skills` | Custom Claude Code skills | `.claude/skills/` + symlinks |
+| `agents` | Custom Claude Code agents | `.claude/agents/` + memory detection |
+| `memories` | Persistent memory systems | engram, openspec, .atl, claude memory |
+
+All scanners run in parallel via `Promise.all()` for maximum speed.
+
+---
+
+## Stack
+
+- **TypeScript 5.x** — strict mode, ESM
+- **@modelcontextprotocol/sdk** — MCP client + server
+- **Zod** — schema validation for MCP tool inputs
+- **tsup** — build (ESM output with shebang)
+- **Vitest** — testing (33 tests)
+
+**Zero runtime dependencies** beyond MCP SDK and Zod.
+
+---
+
+## Contributing
+
+```bash
+git clone https://github.com/cocaxcode/ai-context-inspector.git
+cd ai-context-inspector
+npm install
+npm test          # Run all tests
+npm run build     # Build with tsup
+npm run typecheck # TypeScript check
+npm run lint      # ESLint
+```
+
+---
 
 ## License
 
-MIT
+MIT &copy; [cocaxcode](https://github.com/cocaxcode)
