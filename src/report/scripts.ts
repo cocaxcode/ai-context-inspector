@@ -1,6 +1,26 @@
 export const JS_SCRIPTS = `
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ── Scroll helper with offset for sticky nav + search ──
+  const SCROLL_OFFSET = 110
+
+  function scrollToSection(targetId) {
+    const target = document.getElementById(targetId)
+    if (!target) return
+    if (target.classList.contains('collapsed')) {
+      target.classList.remove('collapsed')
+      const content = target.querySelector('.section-content')
+      if (content) {
+        content.style.maxHeight = content.scrollHeight + 'px'
+        setTimeout(() => { content.style.maxHeight = '' }, 400)
+      }
+    }
+    const y = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET
+    window.scrollTo({ top: y, behavior: 'smooth' })
+    target.style.boxShadow = '0 0 0 2px var(--accent)'
+    setTimeout(() => { target.style.boxShadow = '' }, 1500)
+  }
+
   // ── Animated Counters ──
   document.querySelectorAll('.stat-number').forEach(el => {
     const target = parseInt(el.getAttribute('data-target') || '0')
@@ -108,39 +128,48 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-link[data-target]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault()
-      const targetId = link.getAttribute('data-target')
-      const target = document.getElementById(targetId)
-      if (target) {
-        // Expand if collapsed
-        if (target.classList.contains('collapsed')) {
-          target.classList.remove('collapsed')
-          const content = target.querySelector('.section-content')
-          if (content) {
-            content.style.maxHeight = content.scrollHeight + 'px'
-            setTimeout(() => { content.style.maxHeight = '' }, 400)
-          }
-        }
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
+      scrollToSection(link.getAttribute('data-target'))
     })
   })
 
   // ── Ecosystem Map (click to scroll) ──
-  document.querySelectorAll('.eco-node[data-section]').forEach(node => {
+  document.querySelectorAll('.eco-cat-node[data-section]').forEach(node => {
     node.addEventListener('click', () => {
-      const targetId = node.getAttribute('data-section')
-      const target = document.getElementById(targetId)
-      if (target) {
-        if (target.classList.contains('collapsed')) {
-          target.classList.remove('collapsed')
-          const content = target.querySelector('.section-content')
-          if (content) {
-            content.style.maxHeight = content.scrollHeight + 'px'
-            setTimeout(() => { content.style.maxHeight = '' }, 400)
-          }
-        }
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      scrollToSection(node.getAttribute('data-section'))
+    })
+    node.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        scrollToSection(node.getAttribute('data-section'))
       }
+    })
+  })
+
+  // ── Ecosystem Map Tooltips ──
+  const ecoTooltip = document.getElementById('eco-tooltip')
+  const ecoTooltipText = document.getElementById('eco-tooltip-text')
+
+  document.querySelectorAll('.eco-item[data-tooltip]').forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      if (!ecoTooltip || !ecoTooltipText) return
+      const text = item.getAttribute('data-tooltip')
+      ecoTooltipText.textContent = text
+      const textLen = Math.min(text.length * 6.5 + 20, 220)
+      const rect = ecoTooltip.querySelector('rect')
+      if (rect) {
+        rect.setAttribute('width', textLen)
+        ecoTooltipText.setAttribute('x', textLen / 2)
+      }
+      const circle = item.querySelector('circle')
+      if (circle) {
+        const cx = parseFloat(circle.getAttribute('cx'))
+        const cy = parseFloat(circle.getAttribute('cy'))
+        ecoTooltip.setAttribute('transform', 'translate(' + (cx - textLen / 2) + ',' + (cy - 38) + ')')
+      }
+      ecoTooltip.style.display = ''
+    })
+    item.addEventListener('mouseleave', () => {
+      if (ecoTooltip) ecoTooltip.style.display = 'none'
     })
   })
 
