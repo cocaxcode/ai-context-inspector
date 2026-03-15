@@ -117,9 +117,9 @@ export function renderEcosystemMap(
   if (totalItems === 0) return ''
 
   const W = 900
-  const H = 480
+  const H = 530
   const cx = W / 2
-  const cy = H / 2
+  const cy = H / 2 + 25
   const catRadius = 165
   const itemRadius = 55
   const startAngle = -Math.PI / 2
@@ -254,17 +254,13 @@ export function renderEcosystemMap(
     <!-- Main circle -->
     <circle cx="${cx}" cy="${cy}" r="42" fill="var(--bg-alt)" stroke="var(--accent)"
       stroke-width="2.5" filter="url(#eco-glow-center)"/>
-    <!-- cocaxcode icon in center -->
-    <g transform="translate(${cx},${cy - 8}) scale(0.85)">
-      ${COCAXCODE_ICON}
-    </g>
-    <!-- Project name below icon -->
-    <text x="${cx}" y="${cy + 20}" text-anchor="middle" dominant-baseline="auto"
-      font-family="var(--font-mono)" font-size="10" font-weight="600"
-      fill="var(--text-bright)" opacity="0.9">${esc(projectName)}</text>
+    <!-- Project name -->
+    <text x="${cx}" y="${cy - 2}" text-anchor="middle" dominant-baseline="auto"
+      font-family="var(--font-mono)" font-size="11" font-weight="700"
+      fill="var(--text-bright)" opacity="0.95">${esc(projectName)}</text>
     <!-- Total count -->
-    <text x="${cx}" y="${cy + 32}" text-anchor="middle" dominant-baseline="auto"
-      font-family="var(--font-mono)" font-size="8.5"
+    <text x="${cx}" y="${cy + 14}" text-anchor="middle" dominant-baseline="auto"
+      font-family="var(--font-mono)" font-size="9"
       fill="var(--text-dim)">${totalItems} elementos</text>
   </g>`
 

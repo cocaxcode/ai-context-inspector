@@ -12,15 +12,17 @@ export function registerReportTool(server: McpServer): void {
     {
       dir: z.string().optional().describe('Directorio a escanear (default: cwd)'),
       output: z.string().optional().describe('Ruta del archivo HTML (default: ai-context-report.html)'),
+      include_user: z.boolean().optional().describe('Incluir configuración del usuario (~/.claude, skills, memorias, agentes)'),
       no_introspect: z.boolean().optional().describe('No conectar a MCP servers'),
+      timeout: z.number().optional().describe('Timeout de introspección en ms (default: 10000)'),
     },
-    async ({ dir, output, no_introspect }) => {
+    async ({ dir, output, include_user, no_introspect, timeout }) => {
       try {
         const result = await runAllScanners({
           dir: dir ?? process.cwd(),
-          includeUser: false,
+          includeUser: include_user ?? false,
           introspect: !(no_introspect ?? false),
-          timeout: 10000,
+          timeout: timeout ?? 10000,
         })
 
         const html = generateHtml(result)

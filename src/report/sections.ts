@@ -54,7 +54,21 @@ export function renderNavBar(summary: ScanSummary): string {
   return `
     <nav class="nav-bar">
       <div class="nav-links">
-        <span style="font-family:var(--font-mono);font-size:0.8rem;color:var(--accent);margin-right:0.5rem">&gt;_</span>
+        <span class="nav-brand">
+          <svg viewBox="0 0 32 32" width="18" height="18" style="vertical-align:middle;margin-right:4px">
+            <defs>
+              <linearGradient id="nav-g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
+              <linearGradient id="nav-g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0891b2"/><stop offset="100%" stop-color="#0e7490"/></linearGradient>
+            </defs>
+            <rect width="32" height="32" fill="#0a0a0c" rx="4"/>
+            <rect x="9" y="7.5" width="16" height="18.5" rx="4" fill="url(#nav-g2)" opacity="0.5"/>
+            <rect x="8" y="6.5" width="16" height="18.5" rx="4" fill="url(#nav-g1)"/>
+            <path d="M11.5,11 L18,16 L11.5,21" fill="none" stroke="#0a0a0c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="19" y1="20" x2="21.5" y2="20" stroke="#0a0a0c" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span style="font-family:var(--font-mono);font-size:0.8rem"><span style="color:var(--text-dim)">by</span> <span style="color:var(--accent)">cocaxcode</span></span>
+        </span>
+        <span class="nav-separator"></span>
         ${navLinks}
       </div>
       <div class="nav-actions">

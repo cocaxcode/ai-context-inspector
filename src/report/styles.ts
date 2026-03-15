@@ -100,6 +100,20 @@ body {
   align-items: center;
 }
 
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-right: 0.3rem;
+}
+
+.nav-separator {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 0.4rem;
+}
+
 .nav-link {
   padding: 0.3rem 0.7rem;
   border-radius: var(--radius-sm);
