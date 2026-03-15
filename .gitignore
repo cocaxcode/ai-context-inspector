@@ -3,6 +3,18 @@ dist/
 *.html
 coverage/
 
+# Secrets & env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account*.json
+*.secret
+
 # AI tool configs — root only (fixtures in src/__tests__/ must stay tracked)
 /.atl/
 /.claude/
@@ -37,6 +49,19 @@ coverage/
 .idea/
 .vscode/
 *.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Debug & logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Testing/debug
 .api-testing/
