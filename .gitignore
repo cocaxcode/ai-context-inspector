@@ -1,5 +1,42 @@
 node_modules/
 dist/
 *.html
-.api-testing/
 coverage/
+
+# AI tool configs — root only (fixtures in src/__tests__/ must stay tracked)
+/.atl/
+/.claude/
+/.mcp.json
+/.cursorrules
+/.cursorignore
+/.cursor/
+/.windsurfrules
+/.windsurf/
+/.github/copilot-instructions.md
+/.github/instructions/
+/.github/agents/
+/GEMINI.md
+/.gemini/
+/AGENTS.md
+/AGENT.md
+/.codex/
+/.aider.conf.yml
+/.aiderignore
+/.clinerules
+/.clineignore
+/.continue/
+/.amazonq/
+/.augment/
+/.augment-guidelines
+/.replit.md
+/.idx/
+/openspec/
+/.vscode/mcp.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Testing/debug
+.api-testing/
