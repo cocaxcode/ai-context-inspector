@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.cocaxcode/ai-context-inspector",
+  "description": "Scan, export, and import your AI ecosystem across tools. Discover MCP servers, context files, skills, memories. Export/import between Claude, Cursor, Windsurf, Copilot, Gemini, Codex, OpenCode.",
+  "repository": {
+    "url": "https://github.com/cocaxcode/ai-context-inspector",
+    "source": "github"
+  },
+  "version": "0.4.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@cocaxcode/ai-context-inspector",
+      "version": "0.4.2",
+      "runtime": "node",
+      "transport": {
+        "type": "stdio"
+      },
+      "arguments": ["--mcp"]
+    }
+  ]
+}
