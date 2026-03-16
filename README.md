@@ -2,7 +2,7 @@
   <h1 align="center">@cocaxcode/ai-context-inspector</h1>
   <p align="center">
     <strong>See everything your AI tools know about your project.</strong><br/>
-    19 AI tools &middot; 6 scanners &middot; 3 MCP tools &middot; Dual mode: CLI + MCP server
+    19 AI tools &middot; 6 scanners &middot; 5 MCP tools &middot; Export/Import across 7 tools &middot; CLI + MCP server
   </p>
 </p>
 
@@ -12,7 +12,7 @@
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" /></a>
   <img src="https://img.shields.io/badge/node-%3E%3D20-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node" />
   <img src="https://img.shields.io/badge/AI%20tools-19%20supported-blueviolet?style=flat-square" alt="19 AI tools" />
-  <img src="https://img.shields.io/badge/tests-33-brightgreen?style=flat-square" alt="33 tests" />
+  <img src="https://img.shields.io/badge/tests-104-brightgreen?style=flat-square" alt="104 tests" />
 </p>
 
 <p align="center">
@@ -20,6 +20,7 @@
   <a href="#the-solution">The Solution</a> &middot;
   <a href="#installation">Installation</a> &middot;
   <a href="#cli-usage">CLI Usage</a> &middot;
+  <a href="#exportimport">Export/Import</a> &middot;
   <a href="#mcp-server">MCP Server</a> &middot;
   <a href="#what-it-detects">What It Detects</a> &middot;
   <a href="#html-dashboard">HTML Dashboard</a> &middot;
@@ -175,9 +176,78 @@ npx @cocaxcode/ai-context-inspector --dir ./my-project --user --introspect --tim
 
 ---
 
+## Export/Import
+
+Move your AI configuration between tools. Export from one project, import into another — or the same project with a different AI tool.
+
+### Quick Start
+
+```bash
+# Export your AI ecosystem to .aci/bundle.json
+npx @cocaxcode/ai-context-inspector export
+
+# Import into a project using Cursor
+npx @cocaxcode/ai-context-inspector import --target cursor
+
+# Non-interactive export (all categories, no secrets)
+npx @cocaxcode/ai-context-inspector export --only mcp,context --secrets none
+
+# Non-interactive import (auto-detect tool, skip confirmation)
+npx @cocaxcode/ai-context-inspector import --yes --force
+```
+
+### Export Flags
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--dir <path>` | Directory to export | `.` (current) |
+| `--output <path>` | Output directory | `.aci/` |
+| `--include-user` | Include user-level configs (`~/`) | `false` |
+| `--only <categories>` | Filter: `mcp,skills,agents,memories,context` | all |
+| `--secrets <mode>` | `none` (redact all) or `all` (include all) | interactive |
+
+### Import Flags
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `[file]` | Path to bundle JSON | auto-detect `.aci/bundle.json` |
+| `--dir <path>` | Target directory | `.` (current) |
+| `--target <tool>` | Target tool (see table below) | auto-detect |
+| `--scope <scope>` | `project` or `user` | per-resource |
+| `--force` | Overwrite existing resources | `false` |
+| `--yes` | Skip confirmation prompt | `false` |
+| `--only <categories>` | Filter: `mcp,skills,agents,memories,context` | all |
+| `--secrets <mode>` | `none` or `all` | interactive |
+
+### Supported Target Tools
+
+| Target | MCP Config | Context File | Rules Dir | Skills | Agents |
+|--------|-----------|-------------|-----------|--------|--------|
+| `claude` | `.mcp.json` | `CLAUDE.md` | — | `.claude/skills/` | `.claude/agents/` |
+| `cursor` | `.cursor/mcp.json` | `.cursorrules` | `.cursor/rules/` | — | — |
+| `windsurf` | `.mcp.json` | `.windsurfrules` | `.windsurf/rules/` | — | — |
+| `copilot` | `.vscode/mcp.json` | `.github/copilot-instructions.md` | `.github/instructions/` | — | `.github/agents/` |
+| `gemini` | `.gemini/settings.json` | `GEMINI.md` | `.gemini/rules/` | — | — |
+| `codex` | `.mcp.json` | `AGENTS.md` | `.codex/rules/` | — | — |
+| `opencode` | `opencode.json` | `OPENCODE.md` | `.opencode/rules/` | — | — |
+
+### The `.aci/` Directory
+
+Export creates `.aci/bundle.json` — a self-contained, checksummed JSON bundle with all your AI resources. It is automatically added to `.gitignore`. Import auto-detects this directory when no file path is specified.
+
+### Secrets Handling
+
+Environment variables in MCP server configs (API keys, tokens, passwords) are detected automatically. Three modes:
+
+- **`none`** — redact all sensitive values (safe for sharing)
+- **`all`** — include all values as-is
+- **interactive** (default in CLI) — prompt per variable
+
+---
+
 ## MCP Server
 
-When running as an MCP server (`--mcp`), three tools are exposed:
+When running as an MCP server (`--mcp`), five tools are exposed:
 
 ### `scan`
 
@@ -227,6 +297,40 @@ Generate a standalone HTML dashboard from scan results.
 | `timeout` | number | No | Introspection timeout (ms) |
 
 **Example prompt:** _"Generate an HTML report of my project's AI context"_
+
+### `export_ecosystem`
+
+Export the complete AI ecosystem to a portable `.aci/bundle.json`.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `dir` | string | No | Directory to scan (default: cwd) |
+| `include_user` | boolean | No | Include user-level configs |
+| `only` | string[] | No | Categories: `mcp`, `skills`, `agents`, `memories`, `context` |
+| `secrets` | string | No | `"none"` (default), `"all"`, or `["VAR1", "VAR2"]` to include specific vars |
+
+**Example prompt:** _"Export my AI ecosystem without secrets"_
+
+### `import_ecosystem`
+
+Import a bundle into a project, adapting configuration to the target AI tool.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `file` | string | No | Path to bundle (auto-detects `.aci/bundle.json`) |
+| `dir` | string | No | Target directory (default: cwd) |
+| `target` | string | No | Target tool (auto-detects). One of: `claude`, `cursor`, `windsurf`, `copilot`, `gemini`, `codex`, `opencode` |
+| `scope` | string | No | `project` or `user` |
+| `force` | boolean | No | Overwrite existing resources |
+| `confirm` | boolean | No | Execute import (`false` = dry-run plan only) |
+| `only` | string[] | No | Categories to import |
+| `secrets` | string | No | `"none"`, `"all"`, `["VAR1"]`, or `{"VAR1": "value"}` |
+
+**Example prompt:** _"Import the AI bundle into this project for Cursor"_
 
 ---
 
@@ -307,9 +411,9 @@ The CLI generates a **self-contained HTML file** (no external dependencies) with
 ```
 src/
 ├── index.ts              # Entry: CLI vs MCP mode routing
-├── cli.ts                # CLI arg parsing + orchestration
+├── cli.ts                # CLI arg parsing + orchestration (scan, export, import)
 ├── server.ts             # createServer() MCP factory
-├── scanner/
+├── scanner/              # Discovery engine
 │   ├── types.ts          # All TypeScript interfaces
 │   ├── catalog.ts        # AI_FILE_CATALOG (50+ entries, 19 tools)
 │   ├── index.ts          # runAllScanners() orchestrator
@@ -319,6 +423,15 @@ src/
 │   ├── skills.ts         # Scan skill directories + parse frontmatter
 │   ├── agents.ts         # Scan agent directories + detect memory
 │   └── memories.ts       # Detect engram, openspec, .atl, claude memory
+├── ecosystem/            # Export/import engine
+│   ├── types.ts          # Bundle format, import targets, options
+│   ├── index.ts          # Public API re-exports
+│   ├── export.ts         # Scan → bundle → .aci/bundle.json
+│   ├── import.ts         # Load bundle → plan → execute
+│   ├── target-map.ts     # Path configs for 7 AI tools
+│   ├── detect-target.ts  # Auto-detect AI tool in project
+│   ├── secrets.ts        # Env var detection + sensitive patterns
+│   └── prompts.ts        # Interactive CLI prompts
 ├── report/
 │   ├── generator.ts      # generateHtml(ScanResult) → string
 │   ├── sections.ts       # HTML section renderers
@@ -327,11 +440,13 @@ src/
 ├── tools/
 │   ├── scan.ts           # MCP tool: scan project
 │   ├── introspect.ts     # MCP tool: introspect specific MCP
-│   └── report.ts         # MCP tool: generate HTML report
+│   ├── report.ts         # MCP tool: generate HTML report
+│   ├── export.ts         # MCP tool: export_ecosystem
+│   └── import.ts         # MCP tool: import_ecosystem
 └── __tests__/
-    ├── fixtures/          # Test projects (full, empty, mcp-only)
+    ├── fixtures/          # Test projects (full, empty, mcp-only, export-project)
     ├── helpers.ts         # fixture() path helper
-    └── *.test.ts          # 7 test files, 33 tests
+    └── *.test.ts          # 10 test files, 104 tests
 ```
 
 ### 6 Parallel Scanners
@@ -355,7 +470,7 @@ All scanners run in parallel via `Promise.all()` for maximum speed.
 - **@modelcontextprotocol/sdk** — MCP client + server
 - **Zod** — schema validation for MCP tool inputs
 - **tsup** — build (ESM output with shebang)
-- **Vitest** — testing (33 tests)
+- **Vitest** — testing (104 tests)
 
 **Zero runtime dependencies** beyond MCP SDK and Zod.
 

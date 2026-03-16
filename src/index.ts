@@ -1,9 +1,13 @@
-import { parseCliArgs, runCli } from './cli.js'
+import { runCli } from './cli.js'
 
 async function main() {
-  const options = parseCliArgs(process.argv.slice(2))
+  const argv = process.argv.slice(2)
 
-  if (options.mcp) {
+  // Check for --mcp flag before subcommand routing
+  // (subcommand detection happens inside runCli)
+  const hasMcpFlag = argv.includes('--mcp')
+
+  if (hasMcpFlag) {
     // MCP server mode
     const { StdioServerTransport } = await import(
       '@modelcontextprotocol/sdk/server/stdio.js'
@@ -14,8 +18,8 @@ async function main() {
     await server.connect(transport)
     console.error('ai-context-inspector MCP server running on stdio')
   } else {
-    // CLI mode
-    await runCli(options)
+    // CLI mode (subcommands handled inside runCli)
+    await runCli(argv)
   }
 }
 

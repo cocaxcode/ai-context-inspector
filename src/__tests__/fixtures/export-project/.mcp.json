@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "test-server": {
+      "command": "npx",
+      "args": ["test-mcp"],
+      "env": {
+        "API_KEY": "secret123",
+        "NODE_ENV": "development"
+      }
+    },
+    "simple-server": {
+      "command": "node",
+      "args": ["server.js"]
+    }
+  }
+}

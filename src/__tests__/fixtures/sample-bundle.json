@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "sourceProject": "sample-project",
+  "checksum": "4214bc62881031675cd989888e5458936c18e8399b9b233627f8f7ecad632fa6",
+  "warnings": [],
+  "resources": {
+    "mcpServers": [
+      {
+        "name": "test-mcp",
+        "scope": "project",
+        "config": {
+          "transport": "stdio",
+          "command": "npx",
+          "args": ["test-mcp-server"],
+          "env": {
+            "API_KEY": "${API_KEY}",
+            "NODE_ENV": "development"
+          }
+        },
+        "envVarsRedacted": ["API_KEY"],
+        "envVarsIncluded": ["NODE_ENV"]
+      },
+      {
+        "name": "simple-mcp",
+        "scope": "project",
+        "config": {
+          "transport": "stdio",
+          "command": "node",
+          "args": ["server.js"]
+        },
+        "envVarsRedacted": [],
+        "envVarsIncluded": []
+      }
+    ],
+    "skills": [
+      {
+        "name": "deploy-skill",
+        "scope": "project",
+        "dirName": "deploy-skill",
+        "content": "## Deploy Skill\nThis skill handles deployment.",
+        "description": "Handles deployment",
+        "triggers": ["deploy", "release"]
+      }
+    ],
+    "agents": [
+      {
+        "name": "review-agent",
+        "scope": "project",
+        "fileName": "review-agent.md",
+        "content": "---\nname: review-agent\ndescription: Code review agent\nmodel: sonnet\n---\nYou are a code review agent.",
+        "description": "Code review agent",
+        "model": "sonnet"
+      }
+    ],
+    "memories": [
+      {
+        "type": "atl",
+        "scope": "project",
+        "files": [
+          {
+            "relativePath": "decisions.md",
+            "content": "# Decisions\nUse TypeScript."
+          }
+        ]
+      }
+    ],
+    "contextFiles": [
+      {
+        "path": "CLAUDE.md",
+        "scope": "project",
+        "tool": "claude",
+        "content": "# Sample Project\nThis is a sample."
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "@cocaxcode/ai-context-inspector",
-  "version": "0.3.3",
-  "description": "Scan any project to discover its complete AI ecosystem: MCP servers, tools, context files, skills, memories. Generates an interactive HTML dashboard. Works as CLI and MCP server.",
+  "version": "0.4.0",
+  "description": "Scan, export, and import your AI ecosystem across tools. Discover MCP servers, context files, skills, memories. Export/import between Claude, Cursor, Windsurf, Copilot, Gemini, Codex, OpenCode. CLI + MCP server.",
   "type": "module",
   "bin": {
     "ai-context-inspector": "dist/index.js"
@@ -46,7 +46,11 @@
     "html-report",
     "context-files",
     "skills",
-    "ai-ecosystem"
+    "ai-ecosystem",
+    "export",
+    "import",
+    "opencode",
+    "ai-config-migration"
   ],
   "author": "cocaxcode",
   "license": "MIT",
