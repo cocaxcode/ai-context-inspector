@@ -1,7 +1,7 @@
 // ── Importacion de bundle del ecosistema AI ──
 
 import { readFile, writeFile, mkdir, access } from 'node:fs/promises'
-import { join, dirname } from 'node:path'
+import { join, dirname, resolve, relative } from 'node:path'
 import { homedir } from 'node:os'
 import type {
   EcosystemBundle,
@@ -422,9 +422,13 @@ async function checkMcpConflict(
     return 'missing'
   }
 
-  const servers = (format === 'flat' ? parsed.mcpServers : parsed.mcpServers) as
-    | Record<string, unknown>
-    | undefined
+  // flat: { mcpServers: { ... } }
+  // nested: { settings?: { mcpServers: { ... } }, mcpServers?: { ... } }
+  const servers = (
+    format === 'flat'
+      ? parsed.mcpServers
+      : (parsed.settings as Record<string, unknown> | undefined)?.mcpServers ?? parsed.mcpServers
+  ) as Record<string, unknown> | undefined
 
   if (!servers || !(serverName in servers)) {
     return 'missing'
@@ -463,9 +467,22 @@ async function installMcpServer(
     // File doesn't exist or is invalid, start fresh
   }
 
-  // Ensure mcpServers key exists
-  if (!parsed.mcpServers || typeof parsed.mcpServers !== 'object') {
-    parsed.mcpServers = {}
+  // Get or create the mcpServers container based on format
+  let serversContainer: Record<string, unknown>
+  if (format === 'nested') {
+    if (!parsed.settings || typeof parsed.settings !== 'object') {
+      parsed.settings = {}
+    }
+    const settings = parsed.settings as Record<string, unknown>
+    if (!settings.mcpServers || typeof settings.mcpServers !== 'object') {
+      settings.mcpServers = {}
+    }
+    serversContainer = settings.mcpServers as Record<string, unknown>
+  } else {
+    if (!parsed.mcpServers || typeof parsed.mcpServers !== 'object') {
+      parsed.mcpServers = {}
+    }
+    serversContainer = parsed.mcpServers as Record<string, unknown>
   }
 
   // Build the server entry
@@ -494,7 +511,7 @@ async function installMcpServer(
   }
 
   // Add/replace under mcpServers
-  ;(parsed.mcpServers as Record<string, unknown>)[server.name] = entry
+  serversContainer[server.name] = entry
 
   // Write back preserving other keys
   await mkdir(dirname(mcpConfigPath), { recursive: true })
@@ -511,18 +528,18 @@ async function installSkill(
   dir: string,
   targetConfig: TargetConfig,
   scope?: 'project' | 'user',
-  force?: boolean,
+  _force?: boolean,
 ): Promise<void> {
   const effectiveScope = resolveScope(skill.scope, scope)
   const basePath = getScopedBasePath(dir, effectiveScope)
 
   if (targetConfig.skillsDir) {
-    const skillDir = join(basePath, targetConfig.skillsDir, skill.dirName)
+    const skillDir = safePath(basePath, join(targetConfig.skillsDir, skill.dirName))
     const skillPath = join(skillDir, 'SKILL.md')
     await mkdir(skillDir, { recursive: true })
     await writeFile(skillPath, skill.content, 'utf-8')
   } else if (targetConfig.rulesDir) {
-    const rulesDir = join(basePath, targetConfig.rulesDir)
+    const rulesDir = safePath(basePath, targetConfig.rulesDir)
     const rulePath = join(rulesDir, `${skill.dirName}.md`)
     await mkdir(rulesDir, { recursive: true })
     await writeFile(rulePath, skill.content, 'utf-8')
@@ -537,16 +554,15 @@ async function installAgent(
   dir: string,
   targetConfig: TargetConfig,
   scope?: 'project' | 'user',
-  force?: boolean,
+  _force?: boolean,
 ): Promise<void> {
   if (!targetConfig.agentsDir) return
 
   const effectiveScope = resolveScope(agent.scope, scope)
   const basePath = getScopedBasePath(dir, effectiveScope)
-  const agentsDir = join(basePath, targetConfig.agentsDir)
-  const agentPath = join(agentsDir, agent.fileName)
+  const agentPath = safePath(basePath, join(targetConfig.agentsDir, agent.fileName))
 
-  await mkdir(agentsDir, { recursive: true })
+  await mkdir(dirname(agentPath), { recursive: true })
   await writeFile(agentPath, agent.content, 'utf-8')
 }
 
@@ -558,7 +574,7 @@ async function installContextFile(
   dir: string,
   targetPath: string,
 ): Promise<void> {
-  const fullPath = join(dir, targetPath)
+  const fullPath = safePath(dir, targetPath)
   await mkdir(dirname(fullPath), { recursive: true })
   await writeFile(fullPath, file.content, 'utf-8')
 }
@@ -571,7 +587,7 @@ async function installMemory(
   dir: string,
 ): Promise<void> {
   for (const file of memory.files) {
-    const filePath = join(dir, file.relativePath)
+    const filePath = safePath(dir, file.relativePath)
     await mkdir(dirname(filePath), { recursive: true })
     await writeFile(filePath, file.content, 'utf-8')
   }
@@ -613,6 +629,23 @@ function getScopedBasePath(
   scope: 'project' | 'user',
 ): string {
   return scope === 'project' ? dir : homedir()
+}
+
+/**
+ * Valida que una ruta resuelta no escape del directorio base.
+ * Previene path traversal desde datos del bundle.
+ */
+function safePath(basePath: string, untrustedPath: string): string {
+  const resolved = resolve(basePath, untrustedPath)
+  const rel = relative(basePath, resolved)
+  if (rel.startsWith('..') || resolve(rel) !== rel && rel.startsWith('..')) {
+    throw new Error(`Ruta fuera del directorio destino: ${untrustedPath}`)
+  }
+  // Extra check: the resolved path must start with the base
+  if (!resolved.startsWith(resolve(basePath))) {
+    throw new Error(`Ruta fuera del directorio destino: ${untrustedPath}`)
+  }
+  return resolved
 }
 
 /**

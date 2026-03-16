@@ -26,8 +26,8 @@ export function registerImportTool(server: McpServer): void {
       confirm: z
         .boolean()
         .optional()
-        .default(true)
-        .describe('Ejecutar la importacion (false = solo mostrar plan/dry-run)'),
+        .default(false)
+        .describe('Ejecutar la importacion (default: false = dry-run, true = ejecutar)'),
       only: z
         .array(z.enum(['mcp', 'skills', 'agents', 'memories', 'context']))
         .optional()
@@ -91,7 +91,7 @@ export function registerImportTool(server: McpServer): void {
           target: resolvedTarget,
           scope: scope ?? undefined,
           force: force ?? false,
-          confirm: confirm ?? true,
+          confirm: confirm ?? false,
           only: only as ResourceCategory[] | undefined,
           secrets: secretsMode,
           secretValues,

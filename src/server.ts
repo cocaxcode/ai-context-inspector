@@ -5,7 +5,8 @@ import { registerReportTool } from './tools/report.js'
 import { registerExportTool } from './tools/export.js'
 import { registerImportTool } from './tools/import.js'
 
-const VERSION = '0.1.0'
+declare const __PKG_VERSION__: string
+const VERSION = typeof __PKG_VERSION__ !== 'undefined' ? __PKG_VERSION__ : '0.0.0'
 
 export function createServer(): McpServer {
   const server = new McpServer({

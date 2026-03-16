@@ -452,7 +452,7 @@ export function printImportResult(result: ImportResult): void {
  * Muestra resumen post-exportacion.
  */
 export function printExportResult(
-  bundle: { resources: any; warnings: string[] },
+  bundle: Pick<import('./types.js').EcosystemBundle, 'resources' | 'warnings'>,
   redactedVars: string[],
   includedVars: string[],
   gitignoreAdded: boolean,

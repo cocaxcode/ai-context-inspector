@@ -202,9 +202,17 @@ function printImportHelp(): void {
 /**
  * Parsea una lista de categorias separadas por coma.
  */
+const VALID_CATEGORIES: ResourceCategory[] = ['mcp', 'skills', 'agents', 'memories', 'context']
+
 export function parseOnlyFlag(onlyStr: string | undefined): ResourceCategory[] | undefined {
   if (!onlyStr) return undefined
-  return onlyStr.split(',').map((s) => s.trim()) as ResourceCategory[]
+  const parsed = onlyStr.split(',').map((s) => s.trim())
+  const invalid = parsed.filter((s) => !VALID_CATEGORIES.includes(s as ResourceCategory))
+  if (invalid.length > 0) {
+    console.error(`Error: categorias no validas: ${invalid.join(', ')}. Validas: ${VALID_CATEGORIES.join(', ')}`)
+    process.exit(1)
+  }
+  return parsed as ResourceCategory[]
 }
 
 /**

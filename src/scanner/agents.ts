@@ -2,38 +2,11 @@ import { readFile, readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 import type { ScanConfig, AgentResult, ScanWarning } from './types.js'
+import { parseFrontmatter } from './utils.js'
 
 const AGENT_DIRS_PROJECT = ['.claude/agents']
 const AGENT_DIRS_USER = ['~/.claude/agents']
 const AGENT_MEMORY_DIRS_USER = ['~/.claude/agent-memory']
-
-/**
- * Parse YAML frontmatter from agent .md files
- */
-function parseFrontmatter(
-  content: string,
-): Record<string, string> | null {
-  const match = content.match(/^---\s*\n([\s\S]*?)\n---/)
-  if (!match) return null
-
-  const result: Record<string, string> = {}
-  let currentKey = ''
-  let currentValue = ''
-
-  for (const line of match[1].split('\n')) {
-    const kvMatch = line.match(/^(\w[\w-]*):\s*(.*)$/)
-    if (kvMatch) {
-      if (currentKey) result[currentKey] = currentValue.trim()
-      currentKey = kvMatch[1]
-      currentValue = kvMatch[2].replace(/^["'>-]\s*/, '').replace(/"$/, '')
-    } else if (currentKey && line.match(/^\s+/)) {
-      currentValue += ' ' + line.trim()
-    }
-  }
-  if (currentKey) result[currentKey] = currentValue.trim()
-
-  return result
-}
 
 async function scanAgentDir(
   dirPath: string,

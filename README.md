@@ -326,7 +326,7 @@ Import a bundle into a project, adapting configuration to the target AI tool.
 | `target` | string | No | Target tool (auto-detects). One of: `claude`, `cursor`, `windsurf`, `copilot`, `gemini`, `codex`, `opencode` |
 | `scope` | string | No | `project` or `user` |
 | `force` | boolean | No | Overwrite existing resources |
-| `confirm` | boolean | No | Execute import (`false` = dry-run plan only) |
+| `confirm` | boolean | No | Execute import (default: `false` = dry-run plan only) |
 | `only` | string[] | No | Categories to import |
 | `secrets` | string | No | `"none"`, `"all"`, `["VAR1"]`, or `{"VAR1": "value"}` |
 
@@ -420,6 +420,7 @@ src/
 │   ├── context-files.ts  # Scan context files (.md, rules, configs)
 │   ├── mcp-configs.ts    # Parse .mcp.json, ~/.claude.json, etc.
 │   ├── mcp-introspect.ts # Connect to MCP servers, list tools/resources
+│   ├── utils.ts          # Shared utilities (parseFrontmatter)
 │   ├── skills.ts         # Scan skill directories + parse frontmatter
 │   ├── agents.ts         # Scan agent directories + detect memory
 │   └── memories.ts       # Detect engram, openspec, .atl, claude memory

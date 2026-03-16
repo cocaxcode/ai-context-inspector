@@ -41,7 +41,7 @@ async function introspectOne(
     })
 
     const client = new Client(
-      { name: 'ai-context-inspector', version: '0.1.0' },
+      { name: 'ai-context-inspector', version: '1.0.0' },
     )
 
     // Abort on timeout
@@ -158,17 +158,17 @@ export async function introspectServers(
   servers: McpServerResult[],
   timeout: number,
 ): Promise<void> {
-  const stidoServers = servers.filter(
+  const stdioServers = servers.filter(
     (s) => s.config.transport === 'stdio' && s.config.command,
   )
 
   const results = await Promise.allSettled(
-    stidoServers.map((s) => introspectOne(s, timeout)),
+    stdioServers.map((s) => introspectOne(s, timeout)),
   )
 
-  for (let i = 0; i < stidoServers.length; i++) {
+  for (let i = 0; i < stdioServers.length; i++) {
     const result = results[i]
-    stidoServers[i].introspection =
+    stdioServers[i].introspection =
       result.status === 'fulfilled'
         ? result.value
         : {
