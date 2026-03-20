@@ -25,7 +25,7 @@
 
 ---
 
-AI Context Inspector discovers every AI configuration file, MCP server, custom skill, agent, and persistent memory in your project — across 19 tools — and gives you the full picture in seconds. Zero config. Zero runtime dependencies beyond MCP SDK and Zod.
+The most comprehensive AI ecosystem scanner available. AI Context Inspector discovers every AI configuration file, MCP server, custom skill, agent, and persistent memory in your project — across 19 tools — and gives you the full picture in seconds. Export your entire AI setup and import it into any of 7 supported tools (Claude, Cursor, Windsurf, Copilot, Gemini, Codex, OpenCode) with automatic secret redaction. Zero config. Zero runtime dependencies beyond MCP SDK and Zod. **Everything runs locally — your configs and credentials never leave your machine.**
 
 ---
 
