@@ -170,8 +170,7 @@ Or add directly to any `.mcp.json`:
 | **Sourcegraph** | `.sourcegraph/` | Cody config |
 | **Universal** | `CONVENTIONS.md` | Multi-tool conventions |
 
-> [!TIP]
-> Pass `--user` to also scan user-level configs: `~/.claude/`, `~/.gemini/`, `~/.codex/`, `~/.continue/`, `~/.aider.conf.yml`, `~/.augment/`, `~/.github/agents/`, `~/.codeium/`, `~/.opencode/`, `~/.tabnine/`.
+> **Tip:** Pass `--user` to also scan user-level configs: `~/.claude/`, `~/.gemini/`, `~/.codex/`, `~/.continue/`, `~/.aider.conf.yml`, `~/.augment/`, `~/.github/agents/`, `~/.codeium/`, `~/.opencode/`, `~/.tabnine/`.
 
 Beyond context files, the scanner also detects:
 
@@ -254,8 +253,7 @@ npx @cocaxcode/ai-context-inspector import --yes --force
 | `codex` | `.mcp.json` | `AGENTS.md` | `.codex/rules/` | -- | -- |
 | `opencode` | `opencode.json` | `OPENCODE.md` | `.opencode/rules/` | -- | -- |
 
-> [!NOTE]
-> Secrets handling has three modes: **none** (redact all — safe for sharing), **all** (include as-is), or **interactive** (prompt per variable, CLI default). Environment variables in MCP configs are detected automatically.
+> **Note:** Secrets handling has three modes: **none** (redact all — safe for sharing), **all** (include as-is), or **interactive** (prompt per variable, CLI default). Environment variables in MCP configs are detected automatically.
 
 ---
 
@@ -326,8 +324,7 @@ Import a bundle into a project, adapting configuration to the target tool.
 | `only` | string[] | No | Categories to import |
 | `secrets` | string | No | `"none"`, `"all"`, `["VAR1"]`, or `{"VAR1": "value"}` |
 
-> [!WARNING]
-> `import_ecosystem` defaults to dry-run mode (`confirm: false`). Set `confirm: true` to actually write files.
+> **Warning:** `import_ecosystem` defaults to dry-run mode (`confirm: false`). Set `confirm: true` to actually write files.
 
 ---
 
