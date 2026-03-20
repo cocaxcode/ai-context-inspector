@@ -64,7 +64,7 @@ npx @cocaxcode/ai-context-inspector
 ### Claude Code (MCP server)
 
 ```bash
-claude mcp add ai-context-inspector -- npx -y @cocaxcode/ai-context-inspector@latest --mcp
+claude mcp add --scope user ai-context-inspector -- npx -y @cocaxcode/ai-context-inspector@latest --mcp
 ```
 
 Or add to your `.mcp.json`:
