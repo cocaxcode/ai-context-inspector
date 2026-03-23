@@ -17,6 +17,19 @@ async function main() {
     const transport = new StdioServerTransport()
     await server.connect(transport)
     console.error('ai-context-inspector MCP server running on stdio')
+
+    const shutdown = async () => {
+      console.error('ai-context-inspector: shutting down...')
+      try {
+        await server.close()
+      } catch {
+        // Ignorar errores de cierre
+      }
+      process.exit(0)
+    }
+
+    process.on('SIGINT', shutdown)
+    process.on('SIGTERM', shutdown)
   } else {
     // CLI mode (subcommands handled inside runCli)
     await runCli(argv)
