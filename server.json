@@ -6,12 +6,12 @@
     "url": "https://github.com/cocaxcode/ai-context-inspector",
     "source": "github"
   },
-  "version": "0.4.2",
+  "version": "0.4.9",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@cocaxcode/ai-context-inspector",
-      "version": "0.4.2",
+      "version": "0.4.9",
       "runtime": "node",
       "transport": {
         "type": "stdio"
