@@ -32,23 +32,23 @@ The most comprehensive AI ecosystem scanner available. AI Context Inspector disc
 ## Quick Start
 
 ```bash
-npx @cocaxcode/ai-context-inspector
+npx -y @cocaxcode/ai-context-inspector@latest
 ```
 
 That's it. An HTML dashboard opens with everything your AI tools know about your project.
 
 ```bash
 # Scan a specific directory
-npx @cocaxcode/ai-context-inspector --dir /path/to/project
+npx -y @cocaxcode/ai-context-inspector@latest --dir /path/to/project
 
 # Include user-level configs (~/.claude, ~/.gemini, etc.)
-npx @cocaxcode/ai-context-inspector --user
+npx -y @cocaxcode/ai-context-inspector@latest --user
 
 # Live-connect to each MCP server and list its tools
-npx @cocaxcode/ai-context-inspector --introspect
+npx -y @cocaxcode/ai-context-inspector@latest --introspect
 
 # Output raw JSON instead of HTML
-npx @cocaxcode/ai-context-inspector --json
+npx -y @cocaxcode/ai-context-inspector@latest --json
 ```
 
 <details>
@@ -186,8 +186,8 @@ Beyond context files, the scanner also detects:
 ### Scan
 
 ```bash
-npx @cocaxcode/ai-context-inspector
-npx @cocaxcode/ai-context-inspector --user --introspect
+npx -y @cocaxcode/ai-context-inspector@latest
+npx -y @cocaxcode/ai-context-inspector@latest --user --introspect
 ```
 
 Generates a self-contained HTML dashboard with dark/light mode, search, collapsible sections, file previews, and color-coded tool badges. Pass `--json` for raw output.
@@ -196,10 +196,10 @@ Generates a self-contained HTML dashboard with dark/light mode, search, collapsi
 
 ```bash
 # Export your AI ecosystem to .aci/bundle.json
-npx @cocaxcode/ai-context-inspector export
+npx -y @cocaxcode/ai-context-inspector@latest export
 
 # Export only MCP and context configs, redact secrets
-npx @cocaxcode/ai-context-inspector export --only mcp,context --secrets none
+npx -y @cocaxcode/ai-context-inspector@latest export --only mcp,context --secrets none
 ```
 
 <details>
@@ -219,10 +219,10 @@ npx @cocaxcode/ai-context-inspector export --only mcp,context --secrets none
 
 ```bash
 # Import into a Cursor project
-npx @cocaxcode/ai-context-inspector import --target cursor
+npx -y @cocaxcode/ai-context-inspector@latest import --target cursor
 
 # Auto-detect tool, skip confirmation, overwrite existing
-npx @cocaxcode/ai-context-inspector import --yes --force
+npx -y @cocaxcode/ai-context-inspector@latest import --yes --force
 ```
 
 <details>
